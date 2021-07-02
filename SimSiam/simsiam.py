@@ -3,14 +3,13 @@ import torch
 import pytorch_lightning as pl
 from pytorch_lightning.loggers import TensorBoardLogger
 from pl_bolts.models.self_supervised import SimSiam
-from pl_bolts.utils.self_supervised import torchvision_ssl_encoder
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report
 import PIL
 
 PIL.Image.MAX_IMAGE_PIXELS = 933120000 # Allow decompression bomb
 
-from utils.dataloader import create_dataloaders, create_dataset_test
+from utils.dataloader import create_dataloaders
 from utils.classifier import SAClassifier
 from utils.classificationmetrics import plot_confusion_matrix
 from utils.captum_file import captum_fun
@@ -73,9 +72,5 @@ def use_SimSiam(configs):
         figure = plot_confusion_matrix(conf_mat)
         plt.savefig('./ConfusionMatrix/BYOL_'+str(configs['max_epochs'])+'ep.pdf')
         print(classification_report(lbllist.numpy(), predlist.numpy(), zero_division=0))
-
-    #Captum call
-    _, dataset_test = create_dataset_test(configs=configs)
-    captum_fun(classifier, dataset_test=dataset_test, dataloader_test=dataloader_test, batch_size=configs['batch_size'], classes=classes)
 
     return model, classifier
