@@ -10,7 +10,7 @@ if __name__ == '__main__':
     # Configs
     num_workers = 12
     batch_size = 8
-    max_epochs = 20
+    max_epochs = 50
     img_input_size = 128
     gpus = 1
     seed = 1
@@ -48,7 +48,7 @@ if __name__ == '__main__':
                 captum_fun(classifier, dataset_test=dataset_test, dataloader_test=dataloader_test, batch_size=configs['batch_size'], classes=dataset_test.classes)
         if choice=='m':
             print("\n\nMoCo:\n")
-            use_MoCo(configs)
+            _, classifier = use_MoCo(configs)
 
             choice2 = input("\nShow Captum network interpretation?[y,_]\n")
             if choice2 =='y':
@@ -57,7 +57,7 @@ if __name__ == '__main__':
                 captum_fun(classifier, dataset_test=dataset_test, dataloader_test=dataloader_test, batch_size=configs['batch_size'], classes=dataset_test.classes)
         if choice=='sc':
             print("\n\nSimCLR:\n")
-            use_SimCLR(configs)
+            _, classifier = use_SimCLR(configs)
 
             choice2 = input("\nShow Captum network interpretation?[y,_]\n")
             if choice2 =='y':
@@ -66,7 +66,7 @@ if __name__ == '__main__':
                 captum_fun(classifier, dataset_test=dataset_test, dataloader_test=dataloader_test, batch_size=configs['batch_size'], classes=dataset_test.classes)
         if choice=='ss':
             print("\n\nSimSiam:\n")
-            use_SimSiam(configs)
+            _, classifier = use_SimSiam(configs)
 
             choice2 = input("\nShow Captum network interpretation?[y,_]\n")
             if choice2 =='y':

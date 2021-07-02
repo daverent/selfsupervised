@@ -16,7 +16,7 @@ class SAClassifier(pl.LightningModule):
         self.fc = nn.Linear(input_dim, num_classes)
     
     def forward(self, x):
-        x = self.backbone(x)[0] #BYOL.SiameseArm.forward(x) returns (y=encoder(x),z=projector(x),h=predictor(z)). We want h 
+        x = self.backbone(x)[0] 
         x = torch.flatten(x, start_dim=1)
         x = self.fc(x)
         x = F.log_softmax(x, dim=1)
@@ -50,7 +50,7 @@ class Classifier(pl.LightningModule):
         self.fc = nn.Linear(input_dim, num_classes)
     
     def forward(self, x):
-        x = self.backbone(x) #BYOL.SiameseArm.forward(x) returns (y=encoder(x),z=projector(x),h=predictor(z)). We want h 
+        x = self.backbone(x) 
         x = torch.flatten(x, start_dim=1)
         x = self.fc(x)
         x = F.log_softmax(x, dim=1)
