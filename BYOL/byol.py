@@ -47,7 +47,7 @@ def use_BYOL(configs):
     else:
         classifier = SAClassifier(model.online_network, num_classes=num_classes)
         classifier_logger = TensorBoardLogger("tb_logs", name="BYOLClassifier")
-        classifier_trainer = pl.Trainer(max_epochs=max_epochs,
+        classifier_trainer = pl.Trainer(max_epochs=int(max_epochs/10),
                                         gpus=gpus,
                                         progress_bar_refresh_rate=5,
                                         logger=classifier_logger)
@@ -55,7 +55,7 @@ def use_BYOL(configs):
         torch.save(classifier, classifier_path)
 
     #confusion Matrix
-    want_confmat = True #Set for conf_mat output
+    want_confmat = False #Set for conf_mat output
     if want_confmat:
         predlist=torch.zeros(0,dtype=torch.long, device='cpu')
         lbllist=torch.zeros(0,dtype=torch.long, device='cpu')

@@ -39,7 +39,7 @@ def use_SimCLR(configs):
     else:
         classifier = SAClassifier(backbone=model.encoder, num_classes=num_classes)
         classifier_logger = TensorBoardLogger("tb_logs", name="SimCLRClassifier")
-        classifier_trainer = pl.Trainer(max_epochs=configs['max_epochs'],
+        classifier_trainer = pl.Trainer(max_epochs=int(configs['max_epochs']/10),
                                         gpus=configs['gpus'],
                                         progress_bar_refresh_rate=5,
                                         logger=classifier_logger)
@@ -47,7 +47,7 @@ def use_SimCLR(configs):
         torch.save(classifier, classifier_path)
 
     #confusion Matrix
-    want_confmat = True #Set for conf_mat output
+    want_confmat = False #Set for conf_mat output
     if want_confmat:
         predlist=torch.zeros(0,dtype=torch.long, device='cpu')
         lbllist=torch.zeros(0,dtype=torch.long, device='cpu')
