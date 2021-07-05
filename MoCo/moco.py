@@ -46,7 +46,7 @@ def use_MoCo(configs):
         torch.save(classifier, classifier_path)
 
     #confusion Matrix
-    want_confmat = False #Set for conf_mat output
+    want_confmat = True #Set for conf_mat output
     if want_confmat:
         predlist=torch.zeros(0,dtype=torch.long, device='cpu')
         lbllist=torch.zeros(0,dtype=torch.long, device='cpu')
@@ -54,21 +54,21 @@ def use_MoCo(configs):
         device=torch.device("cpu")
 
         with torch.no_grad():
-            for i, (inputs, classes) in enumerate(dataloader_test):
+            for i, (inputs, cm_classes) in enumerate(dataloader_test):
                 inputs = inputs.to(device)
-                classes = classes.to(device)
+                cm_classes = cm_classes.to(device)
                 outputs = classifier(inputs)
                 _, preds = torch.max(outputs, 1)
 
                 # Append batch prediction results
                 predlist=torch.cat([predlist,preds.cpu()])
-                lbllist=torch.cat([lbllist,classes.cpu()])
+                lbllist=torch.cat([lbllist,cm_classes.cpu()])
 
         # Confusion matrix
         conf_mat=confusion_matrix(lbllist.numpy(), predlist.numpy())
         print(conf_mat)
-        figure = plot_confusion_matrix(conf_mat)
-        plt.savefig('./ConfusionMatrix/BYOL_'+str(configs['max_epochs'])+'ep.pdf')
+        figure = plot_confusion_matrix(conf_mat, classes)
+        plt.savefig('./ConfusionMatrix/MoCo_v2_'+str(configs['max_epochs'])+'ep.pdf')
         print(classification_report(lbllist.numpy(), predlist.numpy(), zero_division=0))
 
     return model, classifier
