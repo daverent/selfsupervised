@@ -1,8 +1,3 @@
 /dataset
-/tb_logs
-BYOL/Models/
-MoCo/Models/
-SimSiam/Models/
-SimCLR/Models/
 sistemadataset.py
 contadataset.py
