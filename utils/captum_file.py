@@ -1,17 +1,14 @@
-import torch
-import torchvision
-import torchvision.transforms as transforms
-import torch.nn.functional as F
-
-from captum.attr import IntegratedGradients
-from captum.attr import Saliency
-from captum.attr import DeepLift
-from captum.attr import NoiseTunnel
-from captum.attr import visualization as viz
+import random
 
 import matplotlib.pyplot as plt
 import numpy as np
-import random
+import torch
+import torch.nn.functional as F
+import torchvision
+import torchvision.transforms as transforms
+from captum.attr import DeepLift, IntegratedGradients, NoiseTunnel, Saliency
+from captum.attr import visualization as viz
+
 
 def imshow(img, transpose = True):
     img = img / 2 + 0.5     # unnormalize
@@ -27,7 +24,7 @@ def attribute_image_features(algorithm, input, classifier, labels, ind, **kwargs
                                              )
     return tensor_attributions
 
-def captum_fun(classifier, dataset_test, dataloader_test, batch_size, classes):
+def captum_fun(classifier, dataset_test, dataloader_test, batch_size, classes, namestr):
     dataiter = iter(dataloader_test)
     images, labels = dataiter.next()
     # print images
@@ -40,7 +37,8 @@ def captum_fun(classifier, dataset_test, dataloader_test, batch_size, classes):
     print('Predicted: ', ' '.join('%5s' % classes[predicted[j]]
                                 for j in range(batch_size)))
 
-    ind = random.randrange(0, batch_size-1)
+    #ind = random.randrange(0, batch_size-1)
+    ind = 7
 
     input = images[ind].unsqueeze(0).cuda()
     input.requires_grad = True
@@ -61,8 +59,11 @@ def captum_fun(classifier, dataset_test, dataloader_test, batch_size, classes):
       'Probability: ', torch.max(F.softmax(outputs, 1)).item())
     original_image = np.transpose((images[ind].cpu().detach().numpy() /2)+0.5, (1, 2, 0))
 
-    _ = viz.visualize_image_attr(None, original_image, method='original_image', title='Original Image')
+    orig = viz.visualize_image_attr(None, original_image, method='original_image', title='Original Image')
+    orig[0].savefig('./CaptumImages/' + namestr + "_orig.jpg", format='jpg')
 
-    _ = viz.visualize_image_attr(grads, original_image, method='blended_heat_map', sign='absolute_value', show_colorbar=True, title='Overlayed Gradient Magnitudes')
+    overgrad = viz.visualize_image_attr(grads, original_image, method='blended_heat_map', sign='all', show_colorbar=True, title='Overlayed Gradient Magnitudes')
+    overgrad[0].savefig('./CaptumImages/' + namestr + "_saliency.png", format='png')
 
-    _ = viz.visualize_image_attr(attr_ig, original_image, method="blended_heat_map",sign="all", show_colorbar=True, title="Overlayed Integrated Gradients")
+    overintgrad = viz.visualize_image_attr(attr_ig, original_image, method="blended_heat_map",sign="all", show_colorbar=True, title="Overlayed Integrated Gradients")
+    overintgrad[0].savefig('./CaptumImages/' + namestr + "_intgrad.png", format='png')

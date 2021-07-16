@@ -1,8 +1,10 @@
 import torchvision
-from pl_bolts.models.self_supervised.moco import Moco2TrainImagenetTransforms
-from pl_bolts.models.self_supervised.swav.transforms import SwAVTrainDataTransform
-from torch.utils.data import DataLoader
 from pl_bolts.models.self_supervised import simclr
+from pl_bolts.models.self_supervised.moco import Moco2TrainImagenetTransforms
+from pl_bolts.models.self_supervised.swav.transforms import \
+    SwAVTrainDataTransform
+from torch.utils.data import DataLoader
+
 
 def create_dataloaders(configs):
     
@@ -14,7 +16,7 @@ def create_dataloaders(configs):
     ])
     
     dataset_train = torchvision.datasets.ImageFolder(
-        configs['path_to_test'],
+        configs['path_to_train'],
         transform=train_transforms
     )
 
@@ -66,7 +68,7 @@ def create_moco_dataloaders(configs):
     ])
 
     dataset_train = torchvision.datasets.ImageFolder(
-        configs['path_to_test'],
+        configs['path_to_train'],
         transform=train_transforms
     )
 
@@ -118,7 +120,7 @@ def create_swav_dataloaders(configs):
     ])
     
     dataset_train = torchvision.datasets.ImageFolder(
-        configs['path_to_test'],
+        configs['path_to_train'],
         transform=train_transforms
     )
 
@@ -164,7 +166,8 @@ def create_dataset_test(configs):
 
     transforms = torchvision.transforms.Compose([
         torchvision.transforms.Resize((configs['img_input_size'], configs['img_input_size'])),
-        torchvision.transforms.ToTensor()
+        torchvision.transforms.ToTensor(),
+        torchvision.transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
     ])
 
     dataset_test = torchvision.datasets.ImageFolder(
@@ -175,7 +178,7 @@ def create_dataset_test(configs):
     dataloader_test = DataLoader(
                                 dataset_test,
                                 batch_size=configs['batch_size'],
-                                shuffle=True,
+                                shuffle=False,
                                 drop_last=False,
                                 num_workers=configs['num_workers']
                                 )

@@ -1,18 +1,21 @@
 import os
-import torch
-import pytorch_lightning as pl
-from pytorch_lightning.loggers import TensorBoardLogger
-from MoCo.moco2_module import Moco_v2
+
 import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix, classification_report
 import PIL
+import pytorch_lightning as pl
+import torch
+from pytorch_lightning.loggers import TensorBoardLogger
+from sklearn.metrics import classification_report, confusion_matrix
+
+from MoCo.moco2_module import Moco_v2
 
 PIL.Image.MAX_IMAGE_PIXELS = 933120000 # Allow decompression bomb
 
-from utils.dataloader import create_moco_dataloaders
-from utils.classifier import Classifier
-from utils.classificationmetrics import plot_confusion_matrix
 from utils.captum_file import captum_fun
+from utils.classificationmetrics import plot_confusion_matrix
+from utils.classifier import Classifier
+from utils.dataloader import create_moco_dataloaders
+
 
 def use_MoCo(configs):
 
@@ -38,7 +41,7 @@ def use_MoCo(configs):
     else:
         classifier = Classifier(backbone= model.encoder_q, num_classes=num_classes)
         classifier_logger = TensorBoardLogger("tb_logs", name="Moco_v2Classifier")
-        classifier_trainer = pl.Trainer(max_epochs=int(configs['max_epochs']/10),
+        classifier_trainer = pl.Trainer(max_epochs=int(configs['max_epochs']),
                                         gpus=configs['gpus'],
                                         progress_bar_refresh_rate=5,
                                         logger=classifier_logger)
