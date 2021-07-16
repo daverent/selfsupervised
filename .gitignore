@@ -1,4 +1,11 @@
-/dataset/SelfSupervised
+/dataset
 sistemadataset.py
 contadataset.py
 /tb_logs
+/BYOL/Models
+/SimCLR/Models
+/SimSiam/Models
+/Moco/Models
+.vscode
+/supervised/weights.h5
+notes.txt
